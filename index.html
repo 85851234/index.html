@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RIVALS | 班級秘密投票系統</title>
     <style>
-        /* Rivals 競技風格 CSS */
         body { 
             background-color: #0a0a0c; 
             color: #ffffff; 
@@ -15,7 +14,6 @@
             align-items: center; 
             min-height: 100vh; 
             margin: 0;
-            overflow-x: hidden;
         }
         .card { 
             background: linear-gradient(145deg, #16161a, #0d0d0f); 
@@ -42,7 +40,6 @@
             margin-top: 15px; 
             color: #888; 
             font-size: 13px;
-            text-transform: uppercase;
         }
         input, select { 
             width: 100%; 
@@ -85,17 +82,17 @@
 <div class="card">
     <h2>VOTE FOR MVP</h2>
     
-    <label>Enter Seat Number | 輸入座號</label>
+    <label>Enter Your Seat | 輸入你的座號</label>
     <input type="number" id="seat" placeholder="例如：12">
     
-    <label>🌸 Select Queen | 提名班花</label>
+    <label>🌸 Select Queen | 提名班花 (限 15-27 號)</label>
     <select id="girl">
-        <option value="">-- 請選擇 --</option>
+        <option value="">-- 請選擇女生 --</option>
     </select>
 
-    <label>🌿 Select King | 提名班草</label>
+    <label>🌿 Select King | 提名班草 (限 1-14 號)</label>
     <select id="boy">
-        <option value="">-- 請選擇 --</option>
+        <option value="">-- 請選擇男生 --</option>
     </select>
 
     <button id="btn" onclick="submit()">Confirm Vote | 確認送出</button>
@@ -103,35 +100,35 @@
 </div>
 
 <script>
-    // 已填入你的 GAS 網址
     const GAS_URL = "https://script.google.com/macros/s/AKfycbyafECOeF-sCu8mo0PJG0avOMZFwDHJf6mDaI5w6qmBAr4YXWfjDTkFMWcGE8nw0iHkbQ/exec";
 
-    // 你的班級名單
     const classList = {
-        "1": ["王辰洧", "副班長"], "2": ["王建凱", "腳踏車公差"], "3": ["吳承諺", "學藝股長"],
-        "4": ["李昌霖", "設備股長"], "5": ["周裕宸", "地理小老師"], "6": ["林炘楷", "訓育股長"],
-        "7": ["林祐丞", "事務股長"], "8": ["林靖傑", "康樂股長"], "9": ["林駿騰", "小老師"],
-        "10": ["張祐瑋", "大老師"], "11": ["陳一揚", "風紀股長"], "12": ["黃詠呈", "獎懲紀錄"],
-        "13": ["曾丞翰", ""], "14": ["楊宗翰", "手機公差"], "15": ["王于緁", "歷史小老師"],
-        "16": ["王姵云", "英文小老師"], "17": ["吳昀潼", ""], "18": ["吳奕璇", "公民小老師"],
-        "19": ["林雨辰", ""], "20": ["林思彤", ""], "21": ["張勻瑄", "衛生股長"],
-        "22": ["陳又瑜", "四合一"], "23": ["陳羽亭", ""], "24": ["陳珮欣", "四合一"],
-        "25": ["詹胥亭亞", "輔導股長"], "26": ["蔡雨恬", "大班長"], "27": ["賴榆芹", "自然小老師"]
+        "1": ["王辰洧"], "2": ["王建凱"], "3": ["吳承諺"], "4": ["李昌霖"], "5": ["周裕宸"], 
+        "6": ["林炘楷"], "7": ["林祐丞"], "8": ["林靖傑"], "9": ["林駿騰"], "10": ["張祐瑋"], 
+        "11": ["陳一揚"], "12": ["黃詠呈"], "13": ["曾丞翰"], "14": ["楊宗翰"], 
+        "15": ["王于緁"], "16": ["王姵云"], "17": ["吳昀潼"], "18": ["吳奕璇"], "19": ["林雨辰"], 
+        "20": ["林思彤"], "21": ["張勻瑄"], "22": ["陳又瑜"], "23": ["陳羽亭"], "24": ["陳珮欣"], 
+        "25": ["詹胥亭亞"], "26": ["蔡雨恬"], "27": ["賴榆芹"]
     };
 
-    // 自動填充下拉選單
     const girlSelect = document.getElementById('girl');
     const boySelect = document.getElementById('boy');
 
+    // 自動分類：1-14 進男生選單，15-27 進女生選單
     Object.keys(classList).forEach(num => {
         const name = classList[num][0];
         const optionText = `${num}號 ${name}`;
-        
-        girlSelect.add(new Option(optionText, name));
-        boySelect.add(new Option(optionText, name));
+        const seatInt = parseInt(num);
+
+        if (seatInt >= 1 && seatInt <= 14) {
+            // 男生
+            boySelect.add(new Option(optionText, name));
+        } else if (seatInt >= 15 && seatInt <= 27) {
+            // 女生
+            girlSelect.add(new Option(optionText, name));
+        }
     });
 
-    // 提交功能
     async function submit() {
         const seat = document.getElementById('seat').value;
         const girl = document.getElementById('girl').value;
@@ -140,7 +137,7 @@
         const status = document.getElementById('status');
 
         if(!seat || !girl || !boy) {
-            alert("請填寫完整資訊！");
+            alert("資料還沒填完喔！");
             return;
         }
 
@@ -149,24 +146,18 @@
         status.innerText = "UPDATING DATA TO SERVER...";
 
         try {
-            // 使用 no-cors 模式確保即使跨域也能發送
             await fetch(GAS_URL, {
                 method: "POST",
                 mode: "no-cors",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ seat: seat, girl: girl, boy: boy })
             });
 
             status.style.color = "#00ff41";
             status.innerText = "SUCCESS! VOTE RECEIVED.";
-            
-            // 2.5 秒後自動刷新
             setTimeout(() => location.reload(), 2500);
         } catch (e) {
-            console.error(e);
-            alert("傳送失敗，請再試一次。");
+            alert("失敗，請檢查網路。");
             btn.disabled = false;
-            status.innerText = "";
         }
     }
 </script>
