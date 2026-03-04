@@ -100,7 +100,8 @@
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyafECOeF-sCu8mo0PJG0avOMZFwDHJf6mDaI5w6qmBAr4YXWfjDTkFMWcGE8nw0iHkbQ/exec";
+    // 已更新為你最新的 GAS 網址
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwU0XeVb_rpaQwpjtB1arDYVECV-6uR9Pa4b9HVbDlBkxSv8n4ZA4EQQNPvF4loQk3v/exec";
 
     const classList = {
         "1": ["王辰洧"], "2": ["王建凱"], "3": ["吳承諺"], "4": ["李昌霖"], "5": ["周裕宸"], 
@@ -114,17 +115,15 @@
     const girlSelect = document.getElementById('girl');
     const boySelect = document.getElementById('boy');
 
-    // 自動分類：1-14 進男生選單，15-27 進女生選單
+    // 自動分類男女生
     Object.keys(classList).forEach(num => {
         const name = classList[num][0];
         const optionText = `${num}號 ${name}`;
         const seatInt = parseInt(num);
 
         if (seatInt >= 1 && seatInt <= 14) {
-            // 男生
             boySelect.add(new Option(optionText, name));
         } else if (seatInt >= 15 && seatInt <= 27) {
-            // 女生
             girlSelect.add(new Option(optionText, name));
         }
     });
@@ -137,7 +136,7 @@
         const status = document.getElementById('status');
 
         if(!seat || !girl || !boy) {
-            alert("資料還沒填完喔！");
+            alert("請填寫座號並選好人選喔！");
             return;
         }
 
@@ -146,6 +145,7 @@
         status.innerText = "UPDATING DATA TO SERVER...";
 
         try {
+            // 使用 fetch 發送資料到你的 GAS
             await fetch(GAS_URL, {
                 method: "POST",
                 mode: "no-cors",
@@ -154,9 +154,12 @@
 
             status.style.color = "#00ff41";
             status.innerText = "SUCCESS! VOTE RECEIVED.";
+            
+            // 2.5 秒後重新整理網頁
             setTimeout(() => location.reload(), 2500);
         } catch (e) {
-            alert("失敗，請檢查網路。");
+            console.error(e);
+            alert("傳送出錯，請檢查網路。");
             btn.disabled = false;
         }
     }
