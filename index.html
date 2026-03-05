@@ -1,129 +1,53 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RIVALS | 班級秘密投票系統</title>
-<style>
-    body { 
-        background-color: #0a0a0c; 
-        color: #ffffff; 
-        font-family: "Microsoft JhengHei", sans-serif; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        min-height: 100vh; 
-        margin: 0;
-    }
-    .card { 
-        background: linear-gradient(145deg, #16161a, #0d0d0f); 
-        padding: 30px; 
-        border-radius: 5px; 
-        width: 90%; 
-        max-width: 380px; 
-        border-left: 5px solid #ff3e3e; 
-        box-shadow: 10px 10px 0px rgba(255, 62, 62, 0.1);
-        text-align: center; 
-    }
-    h2 { 
-        color: #ff3e3e; 
-        text-transform: uppercase; 
-        font-style: italic;
-        letter-spacing: 2px; 
-        margin-bottom: 20px;
-        border-bottom: 2px solid #333;
-        padding-bottom: 10px;
-    }
-    label { 
-        display: block; 
-        text-align: left; 
-        margin-top: 15px; 
-        color: #888; 
-        font-size: 13px;
-    }
-    input, select { 
-        width: 100%; 
-        padding: 12px; 
-        margin-top: 5px; 
-        background: #1f1f23; 
-        border: 1px solid #444; 
-        color: white; 
-        border-radius: 4px; 
-        box-sizing: border-box; 
-        outline: none; 
-        font-size: 16px;
-    }
-    input:focus, select:focus { border-color: #ff3e3e; }
-    button { 
-        width: 100%; 
-        padding: 15px; 
-        background: #ff3e3e; 
-        color: white; 
-        border: none; 
-        border-radius: 4px; 
-        font-weight: bold; 
-        font-size: 18px; 
-        cursor: pointer; 
-        margin-top: 25px; 
-        text-transform: uppercase;
-        transition: 0.2s;
-    }
-    button:hover { 
-        background: #fff; 
-        color: #ff3e3e; 
-        transform: skewX(-5deg);
-    }
-    button:disabled { background: #444; cursor: not-allowed; transform: none; }
-    #status { margin-top: 15px; font-size: 14px; font-weight: bold; font-style: italic; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIVALS | 班級秘密投票系統</title>
+    <style>
+        body { background-color: #0a0a0c; color: #ffffff; font-family: "Microsoft JhengHei", sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: linear-gradient(145deg, #16161a, #0d0d0f); padding: 30px; border-radius: 5px; width: 90%; max-width: 380px; border-left: 5px solid #ff3e3e; box-shadow: 10px 10px 0px rgba(255, 62, 62, 0.1); text-align: center; }
+        h2 { color: #ff3e3e; text-transform: uppercase; font-style: italic; letter-spacing: 2px; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+        label { display: block; text-align: left; margin-top: 15px; color: #888; font-size: 13px; }
+        input, select { width: 100%; padding: 12px; margin-top: 5px; background: #1f1f23; border: 1px solid #444; color: white; border-radius: 4px; box-sizing: border-box; outline: none; font-size: 16px; }
+        button { width: 100%; padding: 15px; background: #ff3e3e; color: white; border: none; border-radius: 4px; font-weight: bold; font-size: 18px; cursor: pointer; margin-top: 25px; text-transform: uppercase; transition: 0.2s; }
+        button:hover { background: #fff; color: #ff3e3e; transform: skewX(-5deg); }
+        button:disabled { background: #444; cursor: not-allowed; }
+        #status { margin-top: 15px; font-size: 14px; font-weight: bold; }
+    </style>
 </head>
 <body>
 
 <div class="card">
     <h2>VOTE FOR MVP</h2>
-    
-    <label>Enter Your Seat | 輸入你的座號</label>
+    <label>Enter Your Seat | 輸入座號</label>
     <input type="number" id="seat" placeholder="例如：12">
     
-    <label>🌸 Select Queen | 提名班花 (限 15-27 號)</label>
-    <select id="girl">
-        <option value="">-- 請選擇女生 --</option>
-    </select>
+    <label>🌸 Select Queen | 提名班花</label>
+    <select id="girl"><option value="">-- 請選擇女生 --</option></select>
 
-    <label>🌿 Select King | 提名班草 (限 1-14 號)</label>
-    <select id="boy">
-        <option value="">-- 請選擇男生 --</option>
-    </select>
+    <label>🌿 Select King | 提名班草</label>
+    <select id="boy"><option value="">-- 請選擇男生 --</option></select>
 
     <button id="btn" onclick="submit()">Confirm Vote | 確認送出</button>
     <div id="status"></div>
 </div>
 
 <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycby6O-JZ9bMwnTQe8MP-poD2F03CaJGvS8diwsXqngKyAl2zjSTajdJ1s5892h3dqvSisw/exec"; // <-- 這裡換成你的 Web App URL
+    // 這裡請務必填入你「最新部署」的 GAS 網址
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbxgoDWRQtOLOA7wZA3CxGkSiKyrWOycCW4aC11DSmLGnT-Lj3lpM4WfuVil44oFBibuVQ/exec";
 
     const classList = {
-        "1": ["王辰洧"], "2": ["王建凱"], "3": ["吳承諺"], "4": ["李昌霖"], "5": ["周裕宸"], 
-        "6": ["林炘楷"], "7": ["林祐丞"], "8": ["林靖傑"], "9": ["林駿騰"], "10": ["張祐瑋"], 
-        "11": ["陳一揚"], "12": ["黃詠呈"], "13": ["曾丞翰"], "14": ["楊宗翰"], 
-        "15": ["王于緁"], "16": ["王姵云"], "17": ["吳昀潼"], "18": ["吳奕璇"], "19": ["林雨辰"], 
-        "20": ["林思彤"], "21": ["張勻瑄"], "22": ["陳又瑜"], "23": ["陳羽亭"], "24": ["陳珮欣"], 
-        "25": ["詹胥亭亞"], "26": ["蔡雨恬"], "27": ["賴榆芹"]
+        "1":"王辰洧","2":"王建凱","3":"吳承諺","4":"李昌霖","5":"周裕宸","6":"林炘楷","7":"林祐丞","8":"林靖傑","9":"林駿騰","10":"張祐瑋","11":"陳一揚","12":"黃詠呈","13":"曾丞翰","14":"楊宗翰",
+        "15":"王于緁","16":"王姵云","17":"吳昀潼","18":"吳奕璇","19":"林雨辰","20":"林思彤","21":"張勻瑄","22":"陳又瑜","23":"陳羽亭","24":"陳珮欣","25":"詹胥亭亞","26":"蔡雨恬","27":"賴榆芹"
     };
 
-    const girlSelect = document.getElementById('girl');
-    const boySelect = document.getElementById('boy');
+    const girlSel = document.getElementById('girl');
+    const boySel = document.getElementById('boy');
 
     Object.keys(classList).forEach(num => {
-        const name = classList[num][0];
-        const optionText = ${num}號 ${name};
-        const seatInt = parseInt(num);
-
-        if (seatInt >= 1 && seatInt <= 14) {
-            boySelect.add(new Option(optionText, name));
-        } else if (seatInt >= 15 && seatInt <= 27) {
-            girlSelect.add(new Option(optionText, name));
-        }
+        const opt = new Option(`${num}號 ${classList[num]}`, classList[num]);
+        if (parseInt(num) <= 14) boySel.add(opt); else girlSel.add(opt);
     });
 
     async function submit() {
@@ -133,39 +57,38 @@
         const btn = document.getElementById('btn');
         const status = document.getElementById('status');
 
-        if(!seat || !girl || !boy) {
-            alert("資料還沒填完喔！");
-            return;
-        }
+        if(!seat || !girl || !boy) { alert("請填寫完整！"); return; }
 
         btn.disabled = true;
+        status.innerText = "傳送中...";
         status.style.color = "#888";
-        status.innerText = "UPDATING DATA TO SERVER...";
 
         try {
-            const res = await fetch(GAS_URL, {
+            // 注意：為了接收重複投票的訊息，這裡移除了 no-cors
+            const response = await fetch(GAS_URL, {
                 method: "POST",
-                mode: "cors",
-                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ seat: seat, girl: girl, boy: boy })
             });
+            
+            const result = await response.json();
 
-            const data = await res.json();
-
-            if(data.success) {
+            if (result.success) {
                 status.style.color = "#00ff41";
-                status.innerText = "SUCCESS! VOTE RECEIVED.";
-                setTimeout(() => location.reload(), 2500);
+                status.innerText = "SUCCESS! 投票成功。";
+                setTimeout(() => location.reload(), 2000);
             } else {
-                alert(data.message); // 防重複或錯誤訊息
+                alert(result.message); // 這裡會跳出「此座號已投過票」
+                status.innerText = "失敗：座號重複";
+                status.style.color = "#ff3e3e";
                 btn.disabled = false;
             }
         } catch (e) {
-            alert("失敗，請檢查網路。");
+            // 由於 GAS 的特殊性，有時 fetch 會因為轉址報錯但資料其實有進去
+            // 如果你發現試算表有增加，但網頁跳失敗，這是正常的。
+            status.innerText = "已嘗試送出，請檢查試算表。";
             btn.disabled = false;
         }
     }
 </script>
-
 </body>
 </html>
